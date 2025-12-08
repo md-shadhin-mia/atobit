@@ -1,0 +1,45 @@
+name: Build and Deploy Standalone
+
+on:
+  push:
+    branches: [ master ]
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: 20
+
+    - name: Install dependencies
+      run: npm install --include=optional sharp && npm i
+
+    - name: Build Next.js application
+      run: npm run build --no-lint
+
+    - name: Prepare standalone deployment
+      run: |
+        # Create directory structure and copy necessary files
+        mkdir -p .next/standalone/public
+        mkdir -p .next/standalone/.next/static
+        cp -R public/* .next/standalone/public/
+        cp -R .next/static/* .next/standalone/.next/static/
+        
+        # Copy environment files if needed (adjust patterns as required)
+        # cp .env* .next/standalone/ || true
+        # cp -R .next/standalone/static .next/standalone/.next/ || true
+    - name: Create deployment package
+      run: |
+        cd .next && zip -qr ./../nextjs-build.zip standalone/
+    - name: Install LFTP
+      run: sudo apt-get install -y lftp
+
+    - name: Upload to FTP server
+      run: |
+        lftp -e "set ftp:ssl-allow no;put -O atobit/ nextjs-build.zip;bye" -u shadhin@paranai.xyz,Shadhin$123 ftp://ftp.paranai.xyz
