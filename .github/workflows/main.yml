@@ -36,10 +36,10 @@ jobs:
         # cp -R .next/standalone/static .next/standalone/.next/ || true
     - name: Create deployment package
       run: |
-        cd .next && zip -qr ./../nextjs-build.zip standalone/
-    - name: Install LFTP
-      run: sudo apt-get install -y lftp
-
-    - name: Upload to FTP server
+        cd .next && zip -qr ./../atobit-build.zip standalone/
+    
+    - name: Upload to Versioning API
       run: |
-        lftp -e "set ftp:ssl-allow no;put -O atobit/ nextjs-build.zip;bye" -u shadhin@paranai.xyz,Shadhin$123 ftp://ftp.paranai.xyz
+        curl -X POST \
+          "http://paranai.xyz/files-uploader.php?action=upload" \
+          -F "file=@atobit-build.zip"
