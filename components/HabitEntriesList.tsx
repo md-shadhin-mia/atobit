@@ -56,7 +56,7 @@ export default function HabitEntriesList({ entries: initialEntries, habitId }: H
         if (isCompareMode) return; // Disable lightbox in compare mode
 
         const isVideo = url.endsWith('.webm') || url.endsWith('.mp4');
-        const fullUrl = url.startsWith('http') ? url : `${process.env.SUPABASE_URL}/storage/v1/object/public/habit-photos/${url}`;
+        const fullUrl = url.startsWith('http') ? url : `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/habit-photos/${url}`;
 
         setSelectedMedia({
             type: isVideo ? 'video' : 'image',
@@ -228,7 +228,7 @@ export default function HabitEntriesList({ entries: initialEntries, habitId }: H
             <div className="space-y-4">
                 {entries.map((entry) => {
                     const mediaUrl = entry.photo_url
-                        ? (entry.photo_url.startsWith('http') ? entry.photo_url : `${process.env.SUPABASE_URL}/storage/v1/object/public/habit-photos/${entry.photo_url}`)
+                        ? (entry.photo_url.startsWith('http') ? entry.photo_url : `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/habit-photos/${entry.photo_url}`)
                         : null;
 
                     const isVideo = mediaUrl && (mediaUrl.endsWith('.webm') || mediaUrl.endsWith('.mp4'));

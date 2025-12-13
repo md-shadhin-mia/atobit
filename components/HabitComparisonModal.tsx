@@ -22,7 +22,7 @@ export default function HabitComparisonModal({ isOpen, entries, onClose }: Habit
 
     const getMediaUrl = (url: string | null) => {
         if (!url) return null;
-        return url.startsWith('http') ? url : `${process.env.SUPABASE_URL}/storage/v1/object/public/habit-photos/${url}`;
+        return url.startsWith('http') ? url : `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/habit-photos/${url}`;
     };
 
     const isVideo = (url: string | null) => {
