@@ -39,7 +39,7 @@ export function HeroSection() {
                         className="mt-10 flex items-center justify-center gap-x-6"
                     >
                         <Link
-                            href="#"
+                            href="/signup"
                             className="rounded-full bg-indigo-600 px-6 py-3 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 transition-all flex items-center"
                         >
                             Get Started <ArrowRight className="ml-2 h-4 w-4" />
