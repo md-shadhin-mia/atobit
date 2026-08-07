@@ -3,22 +3,18 @@ import { cookies } from 'next/headers'
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import PageWrapper from '@/components/PageWrapper';
-import { getSupabaseUrl } from '@/utils/supabase/env';
+import { getSupabaseUrl, getSupabaseAnonKey, getSupabaseServiceRoleKey } from '@/utils/supabase/env';
 
 // Special client to fetch shared data even if unauthenticated.
-// Uses the service role key (server-only) to bypass RLS for this specific read-only page.
+// Uses the service role key (server-only) if available to bypass RLS for this
+// specific read-only page; otherwise falls back to the anon/publishable key,
+// which requires public RLS policies on the habits/habit_entries tables.
 
 async function createAdminClient() {
     const cookieStore = await cookies()
     // Use Service Role Key if available to bypass RLS for sharing.
     // Server-only secret — never prefix with NEXT_PUBLIC_ or it leaks to the client bundle.
-    const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY
-
-    if (!serviceKey) {
-        throw new Error(
-            'Missing SUPABASE_SERVICE_ROLE_KEY. Set it in your deployment platform or server environment.'
-        )
-    }
+    const serviceKey = getSupabaseServiceRoleKey() || getSupabaseAnonKey()
 
     return createServerClient(
         getSupabaseUrl(),

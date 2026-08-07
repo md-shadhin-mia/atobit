@@ -17,12 +17,16 @@ export function getSupabaseUrl(): string {
 
 export function getSupabaseAnonKey(): string {
     const value =
+        process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY ||
         process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ||
+        process.env.SUPABASE_PUBLISHABLE_KEY ||
         process.env.SUPABASE_ANON_KEY ||
         process.env.VITE_SUPABASE_ANON_KEY
 
     if (!value) {
-        throw new Error(MISSING_MSG('NEXT_PUBLIC_SUPABASE_ANON_KEY (or SUPABASE_ANON_KEY)'))
+        throw new Error(
+            MISSING_MSG('NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY (or NEXT_PUBLIC_SUPABASE_ANON_KEY)')
+        )
     }
 
     return value
