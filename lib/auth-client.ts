@@ -23,10 +23,18 @@ export const getCurrentUserClient = async () => {
 export const signUpClient = async (email: string, password: string) => {
   const supabase = createSupabaseClient()
   if (!supabase) return { data: null, error: { message: 'Supabase client not available' } }
-  
+
+  const origin =
+    typeof window !== 'undefined' ? window.location.origin : undefined
+
   const { data, error } = await supabase.auth.signUp({
     email,
     password,
+    options: {
+      // Use the actual domain the user signed up from so verification links
+      // point to the real site, not localhost.
+      ...(origin ? { emailRedirectTo: `${origin}/auth/callback` } : {}),
+    },
   })
   return { data, error }
 }

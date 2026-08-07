@@ -27,11 +27,14 @@ export const getCurrentUser = async () => {
 }
 
 // Function to sign up a new user
-export const signUp = async (email: string, password: string) => {
+export const signUp = async (email: string, password: string, redirectTo?: string) => {
   const supabase = await createSupabaseServerClient()
   const { data, error } = await supabase.auth.signUp({
     email,
     password,
+    options: {
+      ...(redirectTo ? { emailRedirectTo: redirectTo } : {}),
+    },
   })
   return { data, error }
 }
