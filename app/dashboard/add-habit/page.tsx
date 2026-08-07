@@ -3,13 +3,17 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { createClient } from '@/utils/supabase/client';
-import { ArrowLeft, Loader2, Plus } from 'lucide-react';
+import { ArrowLeft, Loader2, Plus, Check } from 'lucide-react';
 import Link from 'next/link';
+import { HABIT_COLORS, HABIT_ICON_OPTIONS, getHabitIcon } from '@/lib/habit-ui';
 
 export default function AddHabitPage() {
     const router = useRouter();
     const supabase = createClient();
     const [name, setName] = useState('');
+    const [color, setColor] = useState('#6366f1');
+    const [icon, setIcon] = useState('star');
+    const [frequency, setFrequency] = useState<'daily' | 'weekly'>('daily');
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
@@ -26,15 +30,18 @@ export default function AddHabitPage() {
                 .from('habits')
                 .insert({
                     name: name,
-                    user_id: user.id
+                    user_id: user.id,
+                    color,
+                    icon,
+                    frequency,
                 });
 
             if (insertError) throw insertError;
 
             router.push('/dashboard');
             router.refresh();
-        } catch (err: any) {
-            setError(err.message);
+        } catch (err: unknown) {
+            setError(err instanceof Error ? err.message : 'Failed to create habit');
         } finally {
             setLoading(false);
         }
@@ -75,6 +82,83 @@ export default function AddHabitPage() {
                                 placeholder="e.g., 10-Step Skincare"
                                 required
                             />
+                        </div>
+
+                        {/* Frequency */}
+                        <div className="mb-6">
+                            <label className="block text-sm font-medium text-gray-700 mb-2">
+                                Frequency
+                            </label>
+                            <div className="grid grid-cols-2 gap-2">
+                                {(['daily', 'weekly'] as const).map((f) => (
+                                    <button
+                                        key={f}
+                                        type="button"
+                                        onClick={() => setFrequency(f)}
+                                        className={`px-4 py-2 rounded-lg border text-sm font-medium transition-colors ${
+                                            frequency === f
+                                                ? 'bg-indigo-600 text-white border-indigo-600'
+                                                : 'bg-white text-gray-600 border-gray-300 hover:border-indigo-300'
+                                        }`}
+                                    >
+                                        {f === 'daily' ? 'Daily' : 'Weekly'}
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
+
+                        {/* Icon */}
+                        <div className="mb-6">
+                            <label className="block text-sm font-medium text-gray-700 mb-2">
+                                Icon
+                            </label>
+                            <div className="grid grid-cols-8 gap-1.5">
+                                {HABIT_ICON_OPTIONS.map((opt) => {
+                                    const Icon = getHabitIcon(opt.key);
+                                    const selected = icon === opt.key;
+                                    return (
+                                        <button
+                                            key={opt.key}
+                                            type="button"
+                                            onClick={() => setIcon(opt.key)}
+                                            title={opt.label}
+                                            className={`flex items-center justify-center h-9 w-9 rounded-lg border transition-colors ${
+                                                selected
+                                                    ? 'bg-indigo-50 border-indigo-500 text-indigo-600'
+                                                    : 'border-gray-200 text-gray-400 hover:border-indigo-300 hover:text-indigo-500'
+                                            }`}
+                                        >
+                                            <Icon size={18} />
+                                        </button>
+                                    );
+                                })}
+                            </div>
+                        </div>
+
+                        {/* Color */}
+                        <div className="mb-6">
+                            <label className="block text-sm font-medium text-gray-700 mb-2">
+                                Color
+                            </label>
+                            <div className="flex flex-wrap gap-2">
+                                {HABIT_COLORS.map((c) => {
+                                    const selected = color === c.value;
+                                    return (
+                                        <button
+                                            key={c.value}
+                                            type="button"
+                                            onClick={() => setColor(c.value)}
+                                            title={c.name}
+                                            className={`relative h-8 w-8 rounded-full flex items-center justify-center transition-transform ${
+                                                selected ? 'scale-110 ring-2 ring-offset-2 ring-gray-400' : 'hover:scale-105'
+                                            }`}
+                                            style={{ backgroundColor: c.value }}
+                                        >
+                                            {selected && <Check size={16} className="text-white" />}
+                                        </button>
+                                    );
+                                })}
+                            </div>
                         </div>
 
                         <button
