@@ -23,7 +23,9 @@
     "react-dom": "19.2.0",
     "react-hot-toast": "^2.6.0",
     "recharts": "^3.5.1",
-    "tailwind-merge": "^3.4.0"
+    "tailwind-merge": "^3.4.0",
+    "@langchain/openrouter": "^0.4.6",
+    "langchain": "^1.5.5"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
