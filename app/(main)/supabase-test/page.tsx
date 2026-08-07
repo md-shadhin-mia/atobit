@@ -82,7 +82,7 @@ export default function SupabaseTestPage() {
       <div className="mt-6 text-sm text-gray-600">
         <p>Note: To fully test this page:</p>
         <ul className="list-disc pl-5 mt-2">
-          <li>Add your actual Supabase URL and ANON key to .env.local</li>
+          <li>Set your Supabase URL and anon key in your platform environment variables (or .env.local locally)</li>
           <li>Create a test user account in your Supabase dashboard</li>
           <li>Update the email and password in the sign-in function</li>
         </ul>

@@ -1,28 +1,28 @@
 import { createServerClient } from '@supabase/ssr'
 import { cookies } from 'next/headers'
 import Link from 'next/link';
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
-import { processWeeklyData, processMonthlyData, processYearlyData, ChartData } from '@/lib/analytics';
 import { notFound } from 'next/navigation';
 import PageWrapper from '@/components/PageWrapper';
+import { getSupabaseUrl } from '@/utils/supabase/env';
 
-// Special client to fetch shared data even if unauthenticated
-// Normally we'd use service role key in a real private environment,
-// but for this MVP, RLS prevents standard public access. 
-// If the user hasn't set SUPABASE_SERVICE_ROLE_KEY, this might fail unless RLS is open.
-// To make this robust, we assume the user adds the Service Role Key env var.
-// If they don't, we can try using the anon key but that would require public RLS policies.
-// Given the prompt, I'll attempt to use the service role if available, or fall back to standard but it might hit RLS.
+// Special client to fetch shared data even if unauthenticated.
+// Uses the service role key (server-only) to bypass RLS for this specific read-only page.
 
 async function createAdminClient() {
     const cookieStore = await cookies()
-    // Use Service Role Key if available to bypass RLS for sharing
-    // CAUTION: Only use for specific, safe queries like this one.
-    const serviceKey = process.env.NEXT_PUBLIC_SUPABASE_SERVICE_ROLE_KEY 
+    // Use Service Role Key if available to bypass RLS for sharing.
+    // Server-only secret — never prefix with NEXT_PUBLIC_ or it leaks to the client bundle.
+    const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY
+
+    if (!serviceKey) {
+        throw new Error(
+            'Missing SUPABASE_SERVICE_ROLE_KEY. Set it in your deployment platform or server environment.'
+        )
+    }
 
     return createServerClient(
-        process.env.NEXT_PUBLIC_SUPABASE_URL!,
-        serviceKey!,
+        getSupabaseUrl(),
+        serviceKey,
         {
             cookies: {
                 getAll() { return cookieStore.getAll() },
