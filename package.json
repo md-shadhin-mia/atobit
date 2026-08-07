@@ -6,10 +6,12 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "db:setup": "node scripts/db-setup.mjs"
   },
   "dependencies": {
     "@headlessui/react": "^2.2.9",
+    "@langchain/openrouter": "^0.4.6",
     "@supabase/auth-helpers-nextjs": "^0.15.0",
     "@supabase/ssr": "^0.8.0",
     "@supabase/supabase-js": "^2.86.2",
@@ -17,15 +19,14 @@
     "clsx": "^2.1.1",
     "date-fns": "^4.1.0",
     "framer-motion": "^12.23.25",
+    "langchain": "^1.5.5",
     "lucide-react": "^0.556.0",
     "next": "16.0.7",
     "react": "19.2.0",
     "react-dom": "19.2.0",
     "react-hot-toast": "^2.6.0",
     "recharts": "^3.5.1",
-    "tailwind-merge": "^3.4.0",
-    "@langchain/openrouter": "^0.4.6",
-    "langchain": "^1.5.5"
+    "tailwind-merge": "^3.4.0"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
